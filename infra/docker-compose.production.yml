@@ -5,15 +5,8 @@ volumes:
   media:
   db_data:
 
-networks:
-  default:
-    name: foodgram-network
-    driver: bridge
-
 services:
   db:
-    networks:
-      - default
     image: postgres:13.0-alpine
     volumes:
       - db_data:/var/lib/postgresql/data/
@@ -30,15 +23,13 @@ services:
       - backend
 
   backend:
-    networks:
-      - default
     container_name: foodgram-backend
     image: dellaine/foodgram_backend
     restart: always
     volumes:
       - static:/backend_static/
       - media:/backend_static/media
-      - ./data/:/app/data/
+      - ../backend/data/:/app/data/
     depends_on:
       - db
     env_file:
