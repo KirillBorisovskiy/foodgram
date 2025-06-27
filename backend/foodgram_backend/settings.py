@@ -146,13 +146,15 @@ AUTHENTICATION_BACKENDS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
-    'foodgramdel.myftp.org'
+    'https://foodgramdel.myftp.org',
+    'http://foodgramdel.myftp.org'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
-    'foodgramdel.myftp.org'
+    'https://foodgramdel.myftp.org',
+    'http://foodgramdel.myftp.org'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
