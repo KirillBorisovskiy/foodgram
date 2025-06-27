@@ -1,7 +1,6 @@
 import json
 from django.core.management.base import BaseCommand
 from foodgram.models import Ingredient
-from foodgram_backend.settings import PARENT_DIR
 
 
 class Command(BaseCommand):
@@ -9,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with open(
-            PARENT_DIR / 'data/ingredients.json',
+            'data/ingredients.json',
             'r',
             encoding='utf-8'
         ) as f:

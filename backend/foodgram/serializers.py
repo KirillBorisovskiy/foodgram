@@ -4,7 +4,6 @@ import re
 from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from djoser.serializers import TokenCreateSerializer
-from django.shortcuts import get_object_or_404
 from rest_framework import exceptions, serializers
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 from rest_framework.authtoken.models import Token
@@ -12,9 +11,7 @@ from rest_framework.authtoken.models import Token
 from foodgram.models import (
     Ingredient,
     IngredientRecipe,
-    Favorite,
     Recipe,
-    ShoppingCart,
     Tag,
     User
 )
@@ -75,7 +72,7 @@ class UserSerializer(serializers.ModelSerializer):
         write_only=True,
         validators=[validate_password],
     )
-    avatar = Base64ImageField(required=False, allow_null=True)
+    avatar = Base64ImageField(required=False)
 
     class Meta:
         model = User
@@ -132,11 +129,6 @@ class UserSerializer(serializers.ModelSerializer):
         if not request or not request.user.is_authenticated:
             return False
         return request.user.follower.filter(author=obj).exists()
-
-    def get_avatar(self, obj):
-        if obj.avatar:
-            return self.context['request'].build_absolute_uri(obj.avatar.url)
-        return None
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -200,7 +192,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 ingredient = Ingredient.objects.get(id=item['id'])
             except Ingredient.DoesNotExist:
                 raise serializers.ValidationError(
-                    {'ingredients': [f'Ингредиент с id {item["id"]} не найден!']},
+                    {'ingredients': [f'Ингредиент {item["id"]} не найден!']},
                     code='invalid'
                 )
             if ingredient in ingredients_list:

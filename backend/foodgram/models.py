@@ -149,11 +149,6 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        if not self.short_url:
-            self.short_url = self._generate_short_code()
-        super().save(*args, **kwargs)
-
     def _generate_short_code(self):
         code = secrets.token_urlsafe(8)[:8]  # 8 случайных символов
         while Recipe.objects.filter(short_url=code).exists():
@@ -162,6 +157,11 @@ class Recipe(models.Model):
 
     def get_short_url(self, request):
         return request.build_absolute_uri(f'/s/{self.short_url}/')
+
+    def save(self, *args, **kwargs):
+        if not self.short_url:
+            self.short_url = self._generate_short_code()
+        super().save(*args, **kwargs)
 
 
 class IngredientRecipe(models.Model):

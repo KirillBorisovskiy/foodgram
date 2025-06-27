@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from djoser.serializers import SetPasswordSerializer
 from rest_framework import (
-    exceptions, pagination, permissions, viewsets, status
+    exceptions, pagination, viewsets, status
 )
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -34,8 +34,8 @@ from foodgram.serializers import (
 
 
 def short_url_redirect(request, code):
-    recipe = get_object_or_404(Recipe, short_url_code=code)
-    return redirect(recipe.get_absolute_url())
+    recipe = get_object_or_404(Recipe, short_url=code)
+    return redirect(f'/recipes/{recipe.id}/')
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -68,16 +68,14 @@ class UserViewSet(viewsets.ModelViewSet):
     )
     def avatar(self, request):
         user = request.user
-        serializer = AvatarSerializer(
-            user,
-            data=request.data,
-            partial=True,
-            context={'request': request}
-        )
         if request.method == 'PUT':
-            if serializer.is_valid() and request.data:
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            serializer = AvatarSerializer(data=request.data,)
+            if serializer.is_valid():
+                user.avatar = serializer.validated_data['avatar']
+                request.user.save()
+                return Response({
+                    'avatar': user.avatar.url if request.user.avatar else None
+                })
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
@@ -87,10 +85,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 user.avatar = None
                 user.save()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response(
-                {'detail': 'Аватар не найден'},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
     @action(
         detail=True,
@@ -237,7 +231,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f'{ingredient.measurement_unit}\n'
             )
         file_name = 'shop_list.txt'
-        response = HttpResponse(shop_list, content_type='text/plain; charset=utf-8')
+        response = HttpResponse(
+            shop_list, content_type='text/plain; charset=utf-8'
+        )
         response['Content-Disposition'] = f'attachment; filename={file_name}'
         return response
 
