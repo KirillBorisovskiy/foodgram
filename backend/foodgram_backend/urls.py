@@ -1,21 +1,12 @@
-from django.contrib import admin
-from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from djoser.views import (
-    TokenCreateView,
-    TokenDestroyView,
-)
+from django.contrib import admin
+from django.urls import include, path
+from djoser.views import TokenCreateView, TokenDestroyView
 from rest_framework import routers
 
-from foodgram.views import (
-    IngredientViewSet,
-    RecipeViewSet,
-    short_url_redirect,
-    TagViewSet,
-    UserViewSet
-)
-
+from foodgram.views import (IngredientViewSet, RecipeViewSet, TagViewSet,
+                            UserViewSet, short_url_redirect)
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, basename='users')

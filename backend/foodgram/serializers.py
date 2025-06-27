@@ -5,16 +5,10 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from djoser.serializers import TokenCreateSerializer
 from rest_framework import exceptions, serializers
-from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 from rest_framework.authtoken.models import Token
+from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 
-from foodgram.models import (
-    Ingredient,
-    IngredientRecipe,
-    Recipe,
-    Tag,
-    User
-)
+from foodgram.models import Ingredient, IngredientRecipe, Recipe, Tag, User
 
 
 class Base64ImageField(serializers.ImageField):

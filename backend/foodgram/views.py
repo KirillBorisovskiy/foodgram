@@ -1,36 +1,21 @@
 from django.db.models import Sum
-from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
-from rest_framework import (
-    exceptions, pagination, viewsets, status
-)
+from rest_framework import exceptions, pagination, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.response import Response
 
 from foodgram.filters import RecipeFilter
-from foodgram.models import (
-    Ingredient,
-    Favorite,
-    Recipe,
-    Subscription,
-    ShoppingCart,
-    Tag,
-    User
-)
+from foodgram.models import (Favorite, Ingredient, Recipe, ShoppingCart,
+                             Subscription, Tag, User)
 from foodgram.permissions import IsAuthorOrReadOnly
-from foodgram.serializers import (
-    AvatarSerializer,
-    IngredientSerializer,
-    RecipeSerializer,
-    ShortRecipeSerializer,
-    SubscriptionSerializer,
-    TagSerializer,
-    UserSerializer
-)
+from foodgram.serializers import (AvatarSerializer, IngredientSerializer,
+                                  RecipeSerializer, ShortRecipeSerializer,
+                                  SubscriptionSerializer, TagSerializer,
+                                  UserSerializer)
 
 
 def short_url_redirect(request, code):

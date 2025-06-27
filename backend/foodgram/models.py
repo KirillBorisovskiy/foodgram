@@ -2,18 +2,11 @@ import secrets
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
-from django.core.validators import (
-    MinValueValidator,
-    RegexValidator,
-    validate_email
-)
+from django.core.validators import (MinValueValidator, RegexValidator,
+                                    validate_email)
 from django.db import models
 
-
-def validate_username(value):
-    if value.lower() == 'me':
-        raise ValidationError("Использование юзернейма 'me' запрещено.")
+from foodgram.validators import validate_username
 
 
 class User(AbstractUser):
