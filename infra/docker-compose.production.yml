@@ -16,7 +16,7 @@ services:
 
   frontend:
    container_name: foodgram-frontend
-   image: dellaine/frontend_frontend
+   image: dellaine/foodgram_frontend
    volumes:
       - static:/frontend_static/
    depends_on:
@@ -24,7 +24,7 @@ services:
 
   backend:
     container_name: foodgram-backend
-    image: dellaine/backend_frontend
+    image: dellaine/foodgram_backend
     restart: always
     volumes:
       - static:/backend_static/
