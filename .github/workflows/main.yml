@@ -43,16 +43,6 @@ jobs:
         cd backend/
       # python manage.py test
 
-    - name: Set up nodeJS
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: Install dependencies
-      run: |
-        cd frontend/
-        npm install
-        npm ci
-
   build-and-push:
     name: Push Docker image to DockerHub
     runs-on: ubuntu-latest
