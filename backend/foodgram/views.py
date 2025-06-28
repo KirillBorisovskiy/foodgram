@@ -262,5 +262,5 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         search_query = self.request.query_params.get('name', None)
 
         if search_query:
-            queryset = queryset.filter(name__istartswith=search_query)
+            queryset = queryset.filter(name__startswith=search_query)
         return queryset.order_by('name')
