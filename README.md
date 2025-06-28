@@ -61,11 +61,10 @@ docker-compose exec backend python manage.py load_ingredients
 5. Доступ к проекту
 После успешного развертывания проект будет доступен по адресу:
 
-text
+Проект:
 http://localhost/
-Админка:
 
-text
+Админка:
 http://localhost/admin/
 Технологии
 Python 3.9
