@@ -6,27 +6,28 @@ from django.core.validators import (MinValueValidator, RegexValidator,
                                     validate_email)
 from django.db import models
 
+from foodgram import constants
 from foodgram.validators import validate_username
 
 
 class User(AbstractUser):
     username = models.CharField(
-        max_length=150,
+        max_length=constants.MAX_LENGHT_NAME,
         unique=True,
         verbose_name='Пользователь',
         validators=[
-            RegexValidator(regex=r'^[\w.@+-]+$'),
+            RegexValidator(regex=constants.REGULAR_EXPRESSIONS),
             validate_username
         ]
     )
     email = models.EmailField(
         verbose_name='email адрес',
         validators=[validate_email],
-        max_length=254,
+        max_length=constants.MAX_LENGHT_EMAIL,
         unique=True
     )
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=constants.MAX_LENGHT_NAME)
+    last_name = models.CharField(max_length=constants.MAX_LENGHT_NAME)
     avatar = models.ImageField(
         upload_to='users/avatars/',
         null=True,
@@ -51,13 +52,13 @@ class User(AbstractUser):
 class Ingredient(models.Model):
     name = models.CharField(
         'Название ингредиента',
-        max_length=200,
+        max_length=constants.MAX_LENGHT_NAME,
         unique=True,
         db_index=True
     )
     measurement_unit = models.CharField(
         'Единица измерения',
-        max_length=10
+        max_length=constants.MEASUREMENT_LEN
     )
 
     class Meta:
@@ -71,7 +72,7 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=16,
+        max_length=constants.MAX_LENGHT_NAME,
         unique=True,
         verbose_name='Название'
     )
@@ -91,7 +92,7 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=constants.MAX_LENGHT_NAME,
         verbose_name='Название рецепта'
     )
     text = models.TextField(
@@ -127,7 +128,7 @@ class Recipe(models.Model):
         help_text='мин.'
     )
     short_url = models.CharField(
-        max_length=10,
+        max_length=constants.SHORT_URL_LEN,
         unique=True,
         blank=True,
         editable=False
@@ -145,9 +146,13 @@ class Recipe(models.Model):
         return self.name
 
     def _generate_short_code(self):
-        code = secrets.token_urlsafe(8)[:8]  # 8 случайных символов
+        code = secrets.token_urlsafe(
+            constants.SHORT_URL_LEN
+        )[:constants.SHORT_URL_LEN]
         while Recipe.objects.filter(short_url=code).exists():
-            code = secrets.token_urlsafe(8)[:8]
+            code = secrets.token_urlsafe(
+                constants.SHORT_URL_LEN
+            )[:constants.SHORT_URL_LEN]
         return code
 
     def get_short_url(self, request):

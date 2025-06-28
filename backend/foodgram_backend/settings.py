@@ -3,13 +3,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv(
-    'SECRET_KEY', 'django-insecure-@ez6jz_-nlt5irm%m$c8b_!b!^2%#ml_-9w2v*0-(bz7ec9#in'
-)
+SECRET_KEY = os.getenv('SECRET_KEY', default='key')
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['backend', 'localhost', '127.0.0.1', 'foodgramdel.myftp.org']
+ALLOWED_HOSTS = os.getenv('HOSTS')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,10 +64,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'food'),
@@ -143,18 +137,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost",
-    "http://127.0.0.1",
-    'https://foodgramdel.myftp.org',
-    'http://foodgramdel.myftp.org'
-]
+CORS_ALLOWED_ORIGINS = os.getenv('HOSTS')
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
-    "http://127.0.0.1",
-    'https://foodgramdel.myftp.org',
-    'http://foodgramdel.myftp.org'
-]
+CSRF_TRUSTED_ORIGINS = os.getenv('HOSTS')
 
 CORS_ALLOW_CREDENTIALS = True

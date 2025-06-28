@@ -96,11 +96,10 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
     def validate_username(self, value):
-        pattern = r'^[\w.@+-]+$'
-        if not re.match(pattern, value):
-            raise serializers.ValidationError(
-                r'Username должен содержать только буквы, цифры и @/./+/-/_'
-            )
+        try:
+            User._meta.get_field('username').run_validators(value)
+        except serializers.ValidationError as e:
+            raise serializers.ValidationError(str(e))
         return value
 
     def create(self, validated_data):
