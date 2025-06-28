@@ -137,8 +137,14 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-CORS_ALLOWED_ORIGINS = os.getenv('ALLOWED_HOSTS', '').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv(
+    'ALLOWED_HOSTS',
+    'http://localhost,http://127.0.0.1'
+).split(',')
 
-CSRF_TRUSTED_ORIGINS = os.getenv('ALLOWED_HOSTS', '').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'ALLOWED_HOSTS',
+    'http://localhost,http://127.0.0.1'
+).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
