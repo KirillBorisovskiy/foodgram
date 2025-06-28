@@ -1,5 +1,4 @@
 import base64
-import re
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile

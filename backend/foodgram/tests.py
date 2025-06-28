@@ -42,13 +42,16 @@ class RecipeAPITestCase(TestCase):
     def test_unauthorized_access(self):
         """Проверка создания рецепта не авторизованным пользователем."""
         self.client.logout()
-        self.assertNotEqual(
-            Recipe.objects.create(
-                author=self.user,
-                name='Тестовый рецепт',
-                text='Описание тестового рецепта',
-                cooking_time=30
-            ),
+        response = self.client.post(
+            '/api/recipes/',
+            data={
+                'name': 'Тестовый рецепт',
+                'text': 'Описание тестового рецепта',
+                'cooking_time': 30
+            }
+        )
+        self.assertEqual(
+            response.status_code,
             HTTPStatus.UNAUTHORIZED,
-            msg='Неавторизованные не может создать рецепт'
+            msg='Неавторизованные пользователи не могут создавать рецепты'
         )
