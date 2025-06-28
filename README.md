@@ -1,4 +1,5 @@
 Foodgram - "Продуктовый помощник"
+
 Описание
 Foodgram - это сайт, где пользователи могут:
 
@@ -27,7 +28,6 @@ cd foodgram
 4. Настройка окружения
 Создайте файл .env в директории infra/ со следующим содержанием:
 
-text
 ```
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
