@@ -12,12 +12,14 @@ jobs:
       postgres:
         image: postgres:13.0-alpine
         env:
-          POSTGRES_USER: django_user
-          POSTGRES_PASSWORD: django_password
-          POSTGRES_DB: django_db
+          POSTGRES_USER: food
+          POSTGRES_PASSWORD: food_password
+          POSTGRES_DB: food
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        volumes:
+          - postgres-data:/var/lib/postgresql/data
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -33,10 +35,10 @@ jobs:
 
     - name: Test flake8
       env:
-        POSTGRES_USER: django_user
-        POSTGRES_PASSWORD: django_password
-        POSTGRES_DB: django_db
-        DB_HOST: postgres
+        POSTGRES_USER: food
+        POSTGRES_PASSWORD: food_password
+        POSTGRES_DB: food
+        DB_HOST: localhost
         DB_PORT: 5432
         DJANGO_SETTINGS_MODULE: foodgram_backend.settings
         ALLOWED_HOSTS: 'localhost,127.0.0.1,testserver'
