@@ -39,7 +39,7 @@ jobs:
         DB_HOST: postgres
         DB_PORT: 5432
         DJANGO_SETTINGS_MODULE: foodgram_backend.settings
-        ALLOWED_HOSTS: '["*"]'
+        ALLOWED_HOSTS: 'localhost,127.0.0.1,testserver'
         SECRET_KEY: 'dummy-key-for-tests'
       run: |
         python -m flake8 backend/

@@ -7,7 +7,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='key')
 
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv('HOSTS')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -137,8 +137,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-CORS_ALLOWED_ORIGINS = os.getenv('HOSTS')
+CORS_ALLOWED_ORIGINS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
-CSRF_TRUSTED_ORIGINS = os.getenv('HOSTS')
+CSRF_TRUSTED_ORIGINS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 CORS_ALLOW_CREDENTIALS = True
