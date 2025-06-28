@@ -7,7 +7,7 @@ SECRET_KEY = os.getenv(
     'SECRET_KEY', 'django-insecure-@ez6jz_-nlt5irm%m$c8b_!b!^2%#ml_-9w2v*0-(bz7ec9#in'
 )
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['backend', 'localhost', '127.0.0.1', 'foodgramdel.myftp.org']
 
