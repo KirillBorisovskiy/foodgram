@@ -49,10 +49,17 @@ class RecipeAdmin(admin.ModelAdmin):
         'pk',
         'name',
         'author',
+        'favorites_count_display'
     )
     search_fields = ('author', 'name',)
     list_filter = ('tags',)
     empty_value_display = '-пусто-'
+    readonly_fields = ('favorites_count',)
+
+    def favorites_count_display(self, obj):
+        return obj.favorites.all().count()
+
+    favorites_count_display.short_description = 'Добавлений в избранное'
 
 
 admin.site.unregister(Group)
