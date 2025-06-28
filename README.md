@@ -20,12 +20,15 @@ Foodgram - это сайт, где пользователи могут:
 
 2. Клонирование репозитория
 bash
+```
 git clone https://github.com/ваш-username/foodgram.git
 cd foodgram
-3. Настройка окружения
+```
+4. Настройка окружения
 Создайте файл .env в директории infra/ со следующим содержанием:
 
 text
+```
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
 POSTGRES_USER=postgres
@@ -37,7 +40,7 @@ SECRET_KEY=ваш-secret-key
 ALLOWED_HOSTS=backend,localhost,127.0.0.1
 CSRF_TRUSTED_ORIGINS=http://localhost,http://127.0.0.1
 CORS_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1,
-
+```
 4. Запуск с помощью Docker
 Убедитесь, что у вас установлены Docker и docker-compose
 
@@ -66,6 +69,7 @@ http://localhost/
 
 Админка:
 http://localhost/admin/
+
 Технологии
 Python 3.9
 
