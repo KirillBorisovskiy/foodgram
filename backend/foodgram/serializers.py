@@ -163,9 +163,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_image(self, data):
-        if 'image' in self.initial_data and not self.initial_data['image']:
+        if 'image' in self.initial_data and self.initial_data['image'] == "":
             raise serializers.ValidationError(
-                {'image': ['Поле image не может быть пустым.']}
+                {'image': ['Поле image не может быть пустым.']},
+                code='invalid'
             )
         return data
 
@@ -277,12 +278,12 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
+        if 'image' in self.initial_data:
+            self.validate_image({'image': self.initial_data['image']})
+
         tags_ids = validated_data.pop('tags', [])
         ingredients_data = validated_data.pop('ingredients', [])
         image = validated_data.pop('image', None)
-
-        if 'image' in self.initial_data:
-            self.validate_image({'image': self.initial_data['image']})
 
         instance = super().update(instance, validated_data)
 
