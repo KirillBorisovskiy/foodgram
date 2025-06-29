@@ -11,7 +11,7 @@ from foodgram.models import Ingredient, IngredientRecipe, Recipe, Tag, User
 
 
 class AvatarSerializer(serializers.ModelSerializer):
-    avatar = Base64ImageField(required=False, allow_null=True)
+    avatar = Base64ImageField(required=True, allow_null=True)
 
     class Meta:
         model = User
@@ -157,8 +157,16 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
+        data = self.validate_image(data)
         data = self.validate_ingredients(data)
         data = self.validate_tags(data)
+        return data
+
+    def validate_image(self, data):
+        if 'image' in self.initial_data and not self.initial_data['image']:
+            raise serializers.ValidationError(
+                {'image': ['Поле image не может быть пустым.']}
+            )
         return data
 
     def validate_ingredients(self, data):
