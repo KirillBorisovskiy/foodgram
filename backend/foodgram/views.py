@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
-from rest_framework import exceptions, pagination, status, viewsets
+from rest_framework import exceptions, filters, pagination, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -208,13 +208,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).annotate(
             total_amount=Sum('ingredientrecipe__amount')
         ).order_by('name')
-        shop_list = 'Список покупок:\n\n'
+        shop_list = ['Список покупок:\n\n']
         for ingredient in ingredients:
-            shop_list += (
+            shop_list.append(
                 f'{ingredient.name} - '
                 f'{ingredient.total_amount} '
                 f'{ingredient.measurement_unit}\n'
             )
+        shop_list = ''.join(shop_list)
         file_name = 'shop_list.txt'
         response = HttpResponse(
             shop_list, content_type='text/plain; charset=utf-8'
@@ -256,11 +257,6 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     pagination_class = None
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        search_query = self.request.query_params.get('name', None)
-
-        if search_query:
-            queryset = queryset.filter(name__startswith=search_query)
-        return queryset.order_by('name')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^name']
+    search_param = 'name'

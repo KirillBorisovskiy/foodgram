@@ -9,10 +9,10 @@ from foodgram.views import (IngredientViewSet, RecipeViewSet, TagViewSet,
                             UserViewSet, short_url_redirect)
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet, basename='users')
-router.register(r'tags', TagViewSet, basename='tags')
-router.register(r'recipes', RecipeViewSet, basename='recipes')
-router.register(r'ingredients', IngredientViewSet, basename='ingredients')
+router.register('users', UserViewSet, basename='users')
+router.register('tags', TagViewSet, basename='tags')
+router.register('recipes', RecipeViewSet, basename='recipes')
+router.register('ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -1,28 +1,17 @@
-import base64
-
 from django.contrib.auth.password_validation import validate_password
-from django.core.files.base import ContentFile
+from django.db import transaction
 from djoser.serializers import TokenCreateSerializer
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import exceptions, serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 
+from foodgram import constants
 from foodgram.models import Ingredient, IngredientRecipe, Recipe, Tag, User
 
 
-class Base64ImageField(serializers.ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
-        return super().to_internal_value(data)
-
-
 class AvatarSerializer(serializers.ModelSerializer):
-    avatar = Base64ImageField(required=True, allow_null=True)
+    avatar = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
@@ -45,7 +34,7 @@ class EmailAuthTokenSerializer(TokenCreateSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
-        max_length=150,
+        max_length=constants.MAX_LENGHT_NAME,
         validators=[
             UniqueValidator(
                 queryset=User.objects.all()
@@ -53,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
     )
     email = serializers.EmailField(
-        max_length=254,
+        max_length=constants.MAX_LENGHT_EMAIL,
         validators=[
             UniqueValidator(
                 queryset=User.objects.all()
@@ -101,13 +90,14 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(str(e))
         return value
 
+    @transaction.atomic
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         Token.objects.create(user=user)
         return user
 
     def to_representation(self, instance):
-        '''Убираем поле password и поля is_subscribed/avatar при POST.'''
+        """Убираем поле password и поля is_subscribed/avatar при POST."""
         data = super().to_representation(instance)
         request = self.context.get('request')
         data.pop('password', None)
@@ -155,7 +145,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    image = Base64ImageField()
+    image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
@@ -247,13 +237,25 @@ class RecipeSerializer(serializers.ModelSerializer):
             return False
         return obj.in_shopping_carts.filter(user=user).exists()
 
+    def _create_recipe_ingredients(self, recipe, ingredients_data):
+        """Метод для связи рецепта с ингредиентами."""
+        IngredientRecipe.objects.bulk_create([
+            IngredientRecipe(
+                recipe=recipe,
+                ingredient_id=ingredient['id'],
+                amount=ingredient['amount']
+            )
+            for ingredient in ingredients_data
+        ])
+
+    @transaction.atomic
     def create(self, validated_data):
         tags_ids = validated_data.pop('tags', [])
         ingredients_data = validated_data.pop('ingredients', [])
         author = self.context['request'].user
         if author.is_anonymous:
             raise exceptions.NotAuthenticated(
-                detail="Для создания рецепта необходимо авторизоваться",
+                detail='Для создания рецепта необходимо авторизоваться',
                 code='not_authenticated'
             )
         recipe = Recipe.objects.create(
@@ -262,23 +264,16 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
 
         recipe.tags.set(tags_ids)
-
-        for ingredient in ingredients_data:
-            IngredientRecipe.objects.create(
-                recipe=recipe,
-                ingredient_id=ingredient['id'],
-                amount=ingredient['amount']
-            )
-
+        self._create_recipe_ingredients(recipe, ingredients_data)
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         tags_ids = validated_data.pop('tags', [])
         ingredients_data = validated_data.pop('ingredients', [])
         image = validated_data.pop('image', None)
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
+        instance = super().update(instance, validated_data)
 
         if image is not None:
             instance.image = image
@@ -288,16 +283,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             instance.tags.set(tags_ids)
         if ingredients_data:
             instance.ingredients.clear()
-            ingredients_to_create = [
-                IngredientRecipe(
-                    recipe=instance,
-                    ingredient_id=ingredient['id'],
-                    amount=ingredient['amount']
-                )
-                for ingredient in ingredients_data
-            ]
-            IngredientRecipe.objects.bulk_create(ingredients_to_create)
-
+            self._create_recipe_ingredients(instance, ingredients_data)
         return instance
 
 
