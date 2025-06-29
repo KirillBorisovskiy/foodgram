@@ -281,6 +281,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('ingredients', [])
         image = validated_data.pop('image', None)
 
+        if 'image' in self.initial_data:
+            self.validate_image({'image': self.initial_data['image']})
+
         instance = super().update(instance, validated_data)
 
         if image is not None:
