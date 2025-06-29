@@ -11,7 +11,7 @@ from foodgram.models import Ingredient, IngredientRecipe, Recipe, Tag, User
 
 
 class AvatarSerializer(serializers.ModelSerializer):
-    avatar = Base64ImageField(required=True, allow_null=True)
+    avatar = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
@@ -54,7 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
         write_only=True,
         validators=[validate_password],
     )
-    avatar = Base64ImageField(required=True)
+    avatar = Base64ImageField(required=False)
 
     class Meta:
         model = User
@@ -145,7 +145,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    image = Base64ImageField(required=True)
+    image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
