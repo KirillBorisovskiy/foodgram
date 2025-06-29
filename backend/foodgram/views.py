@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
-from rest_framework import exceptions, filters, pagination, status, viewsets
+from rest_framework import exceptions, filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from foodgram.filters import RecipeFilter
 from foodgram.models import (Favorite, Ingredient, Recipe, ShoppingCart,
                              Subscription, Tag, User)
+from foodgram.paginations import FoodgramPagination
 from foodgram.permissions import IsAuthorOrReadOnly
 from foodgram.serializers import (AvatarSerializer, IngredientSerializer,
                                   RecipeSerializer, ShortRecipeSerializer,
@@ -26,7 +27,7 @@ def short_url_redirect(request, code):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = pagination.LimitOffsetPagination
+    pagination_class = FoodgramPagination
 
     def create(self, request, *args, **kwargs):
         """При POST-запросе пароль хешируется и сохраняется."""
@@ -149,7 +150,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    pagination_class = pagination.LimitOffsetPagination
+    pagination_class = FoodgramPagination
     permission_classes = [IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
