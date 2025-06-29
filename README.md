@@ -49,25 +49,25 @@ CORS_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1,
 bash
 ```
 cd infra/
-docker-compose up -d
+docker compose up -d
 ```
 После запуска контейнеров выполните миграции:
 
 bash
 ```
-docker-compose exec backend python manage.py migrate
+docker compose exec backend python manage.py migrate
 ```
 Создайте суперпользователя:
 
 bash
 ```
-docker-compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py createsuperuser
 ```
 При необходимости загрузите ингредиенты в БД:
 
 bash
 ```
-docker-compose exec backend python manage.py load_ingredients
+docker compose exec backend python manage.py load_ingredients
 ```
 5. Доступ к проекту
 После успешного развертывания проект будет доступен по адресу:
