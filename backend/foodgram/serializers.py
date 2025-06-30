@@ -163,7 +163,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_image(self, data):
-        if 'image' in self.initial_data and self.initial_data['image'] == "":
+        if 'image' in self.initial_data and self.initial_data['image'] == '':
             raise serializers.ValidationError(
                 {'image': ['Поле image не может быть пустым.']},
                 code='invalid'
