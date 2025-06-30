@@ -21,7 +21,7 @@ from foodgram.serializers import (AvatarSerializer, IngredientSerializer,
 
 def short_url_redirect(request, code):
     recipe = get_object_or_404(Recipe, short_url=code)
-    return redirect(f'/recipes/{recipe.id}/')
+    return redirect(f'/recipes/{recipe.id}')
 
 
 class UserViewSet(viewsets.ModelViewSet):
